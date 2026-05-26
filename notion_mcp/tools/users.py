@@ -9,7 +9,7 @@ from notion_mcp.notion.mcp_client import get_client
 
 
 @mcp.tool()
-def list_users() -> dict:
+async def list_users() -> dict:
     """List all users in the Notion workspace.
 
     Returns:
@@ -17,7 +17,7 @@ def list_users() -> dict:
     """
     try:
         client = get_client()
-        return client.list_users()
+        return await client.list_users()
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
@@ -25,7 +25,7 @@ def list_users() -> dict:
 
 
 @mcp.tool()
-def retrieve_user(user_id: str) -> dict:
+async def retrieve_user(user_id: str) -> dict:
     """Retrieve details for a single user.
 
     Args:
@@ -36,7 +36,7 @@ def retrieve_user(user_id: str) -> dict:
     """
     try:
         client = get_client()
-        return client.retrieve_user(user_id)
+        return await client.retrieve_user(user_id)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:

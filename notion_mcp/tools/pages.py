@@ -9,7 +9,7 @@ from notion_mcp.notion.mcp_client import get_client
 
 
 @mcp.tool()
-def retrieve_page(page_id: str) -> dict:
+async def retrieve_page(page_id: str) -> dict:
     """Retrieve a Notion page by its ID.
 
     Args:
@@ -20,7 +20,7 @@ def retrieve_page(page_id: str) -> dict:
     """
     try:
         client = get_client()
-        return client.retrieve_page(page_id)
+        return await client.retrieve_page(page_id)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
@@ -28,7 +28,7 @@ def retrieve_page(page_id: str) -> dict:
 
 
 @mcp.tool()
-def create_page(
+async def create_page(
     parent_id: str,
     title: str,
     properties: dict | None = None,
@@ -58,7 +58,7 @@ def create_page(
             page_props = {"title": title_prop}
             if properties:
                 page_props.update(properties)
-            return client.create_page(
+            return await client.create_page(
                 parent={"database_id": parent_id},
                 properties=page_props,
                 children=children,
@@ -67,7 +67,7 @@ def create_page(
             page_props = {"title": title_prop}
             if properties:
                 page_props.update(properties)
-            return client.create_page(
+            return await client.create_page(
                 parent={"page_id": parent_id},
                 properties=page_props,
                 children=children,
@@ -79,7 +79,7 @@ def create_page(
 
 
 @mcp.tool()
-def update_page_properties(page_id: str, properties: dict) -> dict:
+async def update_page_properties(page_id: str, properties: dict) -> dict:
     """Update one or more properties of an existing page.
 
     Args:
@@ -91,7 +91,7 @@ def update_page_properties(page_id: str, properties: dict) -> dict:
     """
     try:
         client = get_client()
-        return client.update_page_properties(page_id, properties)
+        return await client.update_page_properties(page_id, properties)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
@@ -99,7 +99,7 @@ def update_page_properties(page_id: str, properties: dict) -> dict:
 
 
 @mcp.tool()
-def archive_page(page_id: str) -> dict:
+async def archive_page(page_id: str) -> dict:
     """Archive (soft-delete) a Notion page.
 
     The page can be restored later by setting ``archived`` back to ``false``.
@@ -112,7 +112,7 @@ def archive_page(page_id: str) -> dict:
     """
     try:
         client = get_client()
-        return client.update_page_properties(page_id, properties={}, archived=True)
+        return await client.update_page_properties(page_id, properties={}, archived=True)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
@@ -120,7 +120,7 @@ def archive_page(page_id: str) -> dict:
 
 
 @mcp.tool()
-def move_page(page_id: str, new_parent_id: str) -> dict:
+async def move_page(page_id: str, new_parent_id: str) -> dict:
     """Move a page to a new parent page or database.
 
     Note: Direct parent updates may not be supported by all Notion API
@@ -139,7 +139,7 @@ def move_page(page_id: str, new_parent_id: str) -> dict:
         # Try page parent first, then database parent.
         for parent_key in ("page_id", "database_id"):
             try:
-                return client.client.pages.update(
+                return await client.client.pages.update(
                     page_id, parent={parent_key: new_parent_id},
                 )
             except APIResponseError:

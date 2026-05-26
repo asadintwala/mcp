@@ -10,7 +10,7 @@ from notion_mcp.models import make_rich_text
 
 
 @mcp.tool()
-def retrieve_database(database_id: str) -> dict:
+async def retrieve_database(database_id: str) -> dict:
     """Retrieve database metadata and schema.
 
     Args:
@@ -21,7 +21,7 @@ def retrieve_database(database_id: str) -> dict:
     """
     try:
         client = get_client()
-        return client.retrieve_database(database_id)
+        return await client.retrieve_database(database_id)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
@@ -29,7 +29,7 @@ def retrieve_database(database_id: str) -> dict:
 
 
 @mcp.tool()
-def retrieve_data_source(data_source_id: str) -> dict:
+async def retrieve_data_source(data_source_id: str) -> dict:
     """Retrieve a data source (database) schema and properties.
 
     Alias for ``retrieve_database`` using the Notion API 2025-09-03
@@ -43,7 +43,7 @@ def retrieve_data_source(data_source_id: str) -> dict:
     """
     try:
         client = get_client()
-        return client.retrieve_database(data_source_id)
+        return await client.retrieve_database(data_source_id)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
@@ -51,7 +51,7 @@ def retrieve_data_source(data_source_id: str) -> dict:
 
 
 @mcp.tool()
-def query_data_source(
+async def query_data_source(
     data_source_id: str,
     filter: dict | None = None,
     sorts: list[dict] | None = None,
@@ -72,7 +72,7 @@ def query_data_source(
     """
     try:
         client = get_client()
-        return client.query_database(
+        return await client.query_database(
             database_id=data_source_id,
             filter=filter,
             sorts=sorts,
@@ -85,7 +85,7 @@ def query_data_source(
 
 
 @mcp.tool()
-def create_data_source(
+async def create_data_source(
     parent_id: str,
     title: str,
     properties: dict,
@@ -114,7 +114,7 @@ def create_data_source(
     """
     try:
         client = get_client()
-        return client.create_database(
+        return await client.create_database(
             parent={"page_id": parent_id},
             title=make_rich_text(title),
             properties=properties,

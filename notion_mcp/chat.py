@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import os
 import sys
 from dotenv import load_dotenv
@@ -50,7 +51,7 @@ notion_tools = [
 ]
 
 
-def main() -> None:
+async def _run() -> None:
     # Load environment variables from .env file
     load_dotenv()
 
@@ -139,8 +140,8 @@ def main() -> None:
                     func = tool_map.get(name)
                     if func:
                         try:
-                            # Invoke tool function
-                            result = func(**args)
+                            # Invoke tool function (now async)
+                            result = await func(**args)
                             
                             # Print summary of the result to keep terminal output clean
                             if isinstance(result, dict) and "results" in result:
@@ -176,6 +177,10 @@ def main() -> None:
             break
         except Exception as e:
             print(f"\nError: {e}\n", file=sys.stderr)
+
+
+def main() -> None:
+    asyncio.run(_run())
 
 
 if __name__ == "__main__":

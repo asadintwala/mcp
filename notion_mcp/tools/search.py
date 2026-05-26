@@ -9,7 +9,7 @@ from notion_mcp.notion.mcp_client import get_client
 
 
 @mcp.tool()
-def search(query: str = "", filter_value: str = "page") -> dict:
+async def search(query: str = "", filter_value: str = "page") -> dict:
     """Search Notion for pages or data sources.
 
     Args:
@@ -25,7 +25,7 @@ def search(query: str = "", filter_value: str = "page") -> dict:
         client = get_client()
         filter_param = {"value": filter_value, "property": "object"} if filter_value else None
         sort_param = {"direction": "descending", "timestamp": "last_edited_time"}
-        return client.search(query=query, filter=filter_param, sort=sort_param)
+        return await client.search(query=query, filter=filter_param, sort=sort_param)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:

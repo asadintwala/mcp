@@ -10,7 +10,7 @@ from notion_mcp.models import make_rich_text
 
 
 @mcp.tool()
-def list_comments(block_id: str) -> dict:
+async def list_comments(block_id: str) -> dict:
     """List all comments on a page or block.
 
     Args:
@@ -21,7 +21,7 @@ def list_comments(block_id: str) -> dict:
     """
     try:
         client = get_client()
-        return client.list_comments(block_id)
+        return await client.list_comments(block_id)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
@@ -29,7 +29,7 @@ def list_comments(block_id: str) -> dict:
 
 
 @mcp.tool()
-def create_comment(parent_id: str, text: str) -> dict:
+async def create_comment(parent_id: str, text: str) -> dict:
     """Add a comment to a Notion page.
 
     Args:
@@ -41,7 +41,7 @@ def create_comment(parent_id: str, text: str) -> dict:
     """
     try:
         client = get_client()
-        return client.create_comment(
+        return await client.create_comment(
             parent={"page_id": parent_id},
             rich_text=make_rich_text(text),
         )

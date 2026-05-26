@@ -9,7 +9,7 @@ from notion_mcp.notion.mcp_client import get_client
 
 
 @mcp.tool()
-def retrieve_block_children(block_id: str, page_size: int = 100) -> dict:
+async def retrieve_block_children(block_id: str, page_size: int = 100) -> dict:
     """List child blocks of a page or block.
 
     Args:
@@ -21,7 +21,7 @@ def retrieve_block_children(block_id: str, page_size: int = 100) -> dict:
     """
     try:
         client = get_client()
-        return client.retrieve_block_children(block_id, page_size=page_size)
+        return await client.retrieve_block_children(block_id, page_size=page_size)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
@@ -29,7 +29,7 @@ def retrieve_block_children(block_id: str, page_size: int = 100) -> dict:
 
 
 @mcp.tool()
-def append_block_children(block_id: str, children: list[dict]) -> dict:
+async def append_block_children(block_id: str, children: list[dict]) -> dict:
     """Append new blocks to a page or block.
 
     Args:
@@ -53,7 +53,7 @@ def append_block_children(block_id: str, children: list[dict]) -> dict:
     """
     try:
         client = get_client()
-        return client.append_block_children(block_id, children=children)
+        return await client.append_block_children(block_id, children=children)
     except APIResponseError as exc:
         return {"error": str(exc), "status": exc.status}
     except Exception as exc:
